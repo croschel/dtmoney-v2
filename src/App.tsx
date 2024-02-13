@@ -1,3 +1,4 @@
+import { TransactionProvider } from "./contexts/TransactionContext";
 import { Transactions } from "./pages/Transactions";
 import { GlobalStyles } from "./styles/global";
 
@@ -5,7 +6,9 @@ function App() {
   return (
     <div>
       <GlobalStyles />
-      <Transactions />
+      <TransactionProvider>
+        <Transactions />
+      </TransactionProvider>
     </div>
   );
 }
