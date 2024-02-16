@@ -8,6 +8,7 @@ import {
   TransactionsTable,
 } from "./styles";
 import { TransactionContext } from "../../contexts/TransactionContext";
+import { formatBRCurrency, formatCalendarDate } from "../../utils/format";
 
 export function Transactions() {
   const { transactions } = useContext(TransactionContext);
@@ -24,11 +25,12 @@ export function Transactions() {
                 <td width="50%">{transaction.description}</td>
                 <td>
                   <PriceHighlight variant={transaction.type}>
-                    {transaction.price}
+                    {transaction.type === "outcome" && "- "}
+                    {formatBRCurrency(transaction.price)}
                   </PriceHighlight>
                 </td>
                 <td>{transaction.type}</td>
-                <td>{transaction.createdAt}</td>
+                <td>{formatCalendarDate(transaction.createdAt)}</td>
               </tr>
             ))}
           </tbody>
