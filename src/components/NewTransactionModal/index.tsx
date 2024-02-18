@@ -8,21 +8,17 @@ import {
   TransactionTypeButton,
 } from "./styles";
 import { ArrowCircleDown, ArrowCircleUp, X } from "phosphor-react";
-import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
-
-const newTransactionFormSchema = z.object({
-  description: z.string(),
-  price: z.number(),
-  category: z.string(),
-  type: z.enum(["income", "outcome"]),
-});
-
-type NewTransactionFormInputs = z.infer<typeof newTransactionFormSchema>;
+import { NewTransactionFormInputs } from "../../models/interfaces/transaction";
+import { newTransactionFormSchema } from "../../schemas/transaction";
+import { useContext } from "react";
+import { TransactionContext } from "../../contexts/TransactionContext";
 
 export function NewTransactionModal() {
+  const { createTransaction } = useContext(TransactionContext);
   const {
     control,
+    reset,
     register,
     handleSubmit,
     formState: { isSubmitting },
@@ -33,9 +29,9 @@ export function NewTransactionModal() {
     },
   });
 
-  async function handleCreateNewTransaction(data: NewTransactionFormInputs) {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log(data);
+  function handleCreateNewTransaction(data: NewTransactionFormInputs) {
+    createTransaction(data);
+    reset();
   }
 
   return (
