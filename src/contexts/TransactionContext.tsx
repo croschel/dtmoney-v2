@@ -1,8 +1,13 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { Transaction } from "../models/interfaces/transaction";
 
+interface FetchParams {
+  query?: string;
+}
+
 interface TransactionContext {
   transactions: Transaction[];
+  fetchTransactions: (fetchParams: FetchParams) => Promise<void>;
 }
 
 interface Props {
@@ -13,18 +18,20 @@ export const TransactionContext = createContext({} as TransactionContext);
 
 export const TransactionProvider = ({ children }: Props) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const loadTransactions = async () => {
-    const result = await fetch("http://localhost:3333/transactions").then(
-      (res) => res.json()
-    );
+  const fetchTransactions = async ({ query }: FetchParams) => {
+    const url = new URL("http://localhost:3333/transactions");
+    if (query) {
+      url.searchParams.append("q", query);
+    }
+    const result = await fetch(url).then((res) => res.json());
     setTransactions(result);
   };
 
   useEffect(() => {
-    loadTransactions();
+    fetchTransactions({});
   }, []);
   return (
-    <TransactionContext.Provider value={{ transactions }}>
+    <TransactionContext.Provider value={{ transactions, fetchTransactions }}>
       {children}
     </TransactionContext.Provider>
   );
