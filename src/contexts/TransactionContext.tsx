@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { Transaction } from "../models/interfaces/transaction";
+import { api } from "../lib/axios";
 
 interface FetchParams {
   query?: string;
@@ -19,12 +20,12 @@ export const TransactionContext = createContext({} as TransactionContext);
 export const TransactionProvider = ({ children }: Props) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const fetchTransactions = async ({ query }: FetchParams) => {
-    const url = new URL("http://localhost:3333/transactions");
-    if (query) {
-      url.searchParams.append("q", query);
-    }
-    const result = await fetch(url).then((res) => res.json());
-    setTransactions(result);
+    const response = await api.get("/transactions", {
+      params: {
+        q: query,
+      },
+    });
+    setTransactions(response.data);
   };
 
   useEffect(() => {
