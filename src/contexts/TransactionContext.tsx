@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { createContext } from "use-context-selector";
 import {
   NewTransactionFormInputs,
@@ -26,7 +26,7 @@ export const TransactionContext = createContext({} as TransactionContext);
 
 export const TransactionProvider = ({ children }: Props) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const fetchTransactions = async ({ query }: FetchParams) => {
+  const fetchTransactions = useCallback(async ({ query }: FetchParams) => {
     const response = await api.get("/transactions", {
       params: {
         _sort: "createdAt",
@@ -35,9 +35,9 @@ export const TransactionProvider = ({ children }: Props) => {
       },
     });
     setTransactions(response.data);
-  };
+  }, []);
 
-  const createTransaction = async (data: NewTransactionParams) => {
+  const createTransaction = useCallback(async (data: NewTransactionParams) => {
     const { category, description, price, type } = data;
     // @ts-expect-error - json server will take care about creating a new id
     const newTransaction: Transaction = {
@@ -51,11 +51,12 @@ export const TransactionProvider = ({ children }: Props) => {
       ...newTransaction,
     });
     setTransactions((prevState) => [response.data, ...prevState]);
-  };
+  }, []);
 
   useEffect(() => {
     fetchTransactions({});
-  }, []);
+  }, [fetchTransactions]);
+
   return (
     <TransactionContext.Provider
       value={{ transactions, fetchTransactions, createTransaction }}

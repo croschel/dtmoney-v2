@@ -6,8 +6,9 @@ import { TransactionContext } from "../../contexts/TransactionContext";
 import { SearchFormInputs } from "../../models/interfaces/transaction";
 import { searchFormSchema } from "../../schemas/transaction";
 import { useContextSelector } from "use-context-selector";
+import { memo } from "react";
 
-export function SearchForm() {
+export function SearchFormComponent() {
   const fetchTransactions = useContextSelector(
     TransactionContext,
     (context) => context.fetchTransactions
@@ -40,3 +41,5 @@ export function SearchForm() {
     </SearchFormContainer>
   );
 }
+
+export const SearchForm = memo(SearchFormComponent);
