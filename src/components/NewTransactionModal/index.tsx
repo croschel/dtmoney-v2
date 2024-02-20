@@ -11,11 +11,14 @@ import { ArrowCircleDown, ArrowCircleUp, X } from "phosphor-react";
 import { Controller, useForm } from "react-hook-form";
 import { NewTransactionFormInputs } from "../../models/interfaces/transaction";
 import { newTransactionFormSchema } from "../../schemas/transaction";
-import { useContext } from "react";
 import { TransactionContext } from "../../contexts/TransactionContext";
+import { useContextSelector } from "use-context-selector";
 
 export function NewTransactionModal() {
-  const { createTransaction } = useContext(TransactionContext);
+  const createTransaction = useContextSelector(
+    TransactionContext,
+    (context) => context.createTransaction
+  );
   const {
     control,
     reset,
